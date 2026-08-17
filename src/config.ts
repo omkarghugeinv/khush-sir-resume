@@ -7,10 +7,21 @@ export const siteConfig = {
     email: "omkarghugeinv@gmail.com",
     linkedin: "https://linkedin.com/in/omkarghugeinv",
     //twitter: "https://x.com/rfitzio",
-    github: "https://github.com/RyanFitzgerald",
+    github: "https://github.com/omkarghugeinv",
   },
-  aboutMe:
-    "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem quos asperiores nihil consequatur tempore cupiditate architecto natus commodi corrupti quas quasi facere est, dignissimos odit nam veniam sapiente ut, vitae eligendi ipsum dolor, nostrum ullam impedit! Corrupti ratione mollitia temporibus necessitatibus, consectetur reiciendis recusandae id, dolorum quaerat, vero pariatur. Ratione!",
+
+
+  aboutMe: `Hey there 👋🏻 I’m Omkar Ghuge, a tech enthusiast who is genuinely fascinated by how everything in the digital world connects and runs behind the scenes.
+
+  If you asked me what I specialize in, the honest answer is: I’m interested in pretty much everything! My curious side has led me to dive headfirst into networking, spinning up servers, tinkering with SQL databases, and exploring cybersecurity. But out of all the rabbit holes I’ve fallen into, the world of data—especially working with Python, SQL, and Machine Learning—is what really captures my imagination.
+
+  I actually typed my very first line of code back in 7th grade in C. Did I understand what I was doing back then? Absolutely not! 😅 But that early spark set off a continuous journey of exploring, breaking things, and building them back better. I got hooked on the idea that with the right data and tools, you can solve real-world puzzles and build things that truly help people.
+
+  When I’m not leveling up my core skills, you’ll find me tinkering with cool new tech—currently diving into interactive 3D, containerized workflows, and VR development. I also love sharing what I learn and mentoring fellow tech-heads 👨🏻‍💻 in my free time.
+
+  So, you’ve stumbled upon my site and thought, “I want to work with this person!” Well, I am flattered! If you’re looking for a curious, hands-on problem solver who loves connecting the dots across data, tech, and creative ideas, you’re in luck.`,
+
+
   skills: ["SQL","Python"],
   projects: [
     {
