@@ -23,6 +23,7 @@ export const siteConfig = {
 
 
   skills: ["SQL","Python"],
+  /*
   projects: [
     {
       name: "AI Dev Roundup Newsletter",
@@ -46,57 +47,62 @@ export const siteConfig = {
       skills: ["React", "Node.js", "AWS"],
     },
   ],
+  */
   experience: [
     {
-      company: "Tech Company",
-      title: "Senior Software Engineer",
-      dateRange: "Jan 2022 - Present",
+      company: "ABB",
+      title: "VR Developer (Collaborative Project)",
+      dateRange: "Aug 2025 - Nov 2025",
       bullets: [
-        "Led development of microservices architecture serving 1M+ users",
-        "Reduced API response times by 40% through optimization",
-        "Mentored team of 5 junior developers",
+        "Contributed to a collaborative team developing an industrial VR application for electrician training on handling and testing Gas Insulated Switchgear (GIS) equipment.",
+        "Implemented VR simulations, focusing on interactive training modules for safe electrical handling procedures.",
       ],
     },
     {
-      company: "Startup Inc",
-      title: "Full Stack Developer",
-      dateRange: "Jun 2020 - Dec 2021",
+      company: "Skill India Competition",
+      title: "State Representative for Maharashtra",
+      dateRange: "2023",
       bullets: [
-        "Built and launched MVP product from scratch using React and Node.js",
-        "Implemented CI/CD pipeline reducing deployment time by 60%",
-        "Collaborated with product team to define technical requirements",
+        "Represented Maharashtra in the India skill competition, demonstrating technical expertise in Logistics and Freight Forwarding.",
       ],
     },
     {
-      company: "Digital Agency",
-      title: "Frontend Developer",
-      dateRange: "Aug 2018 - May 2020",
+      company: "Solar Project Research NGO",
+      title: "Social Work Researcher",
       bullets: [
-        "Developed responsive web applications for 20+ clients",
-        "Improved site performance scores by 35% on average",
-        "Introduced modern JavaScript frameworks to legacy codebases",
+        "Conducted research, design, prototyping, and performance analysis of solar energy systems as part of a social initiative.",
       ],
     },
   ],
   education: [
     {
-      school: "University Name",
-      degree: "Bachelor of Science in Computer Science",
-      dateRange: "2014 - 2018",
+      school: "Guru Gobind Singh College of Engineering and Research Center, Nashik",
+      degree: "Bachelor of Engineering in Artificial Intelligence and Data Science",
+      dateRange: "2023 - Present",
       achievements: [
-        "Graduated Magna Cum Laude with 3.8 GPA",
-        "Dean's List all semesters",
-        "President of Computer Science Club",
+        "Currently at fourth year",
       ],
     },
     {
-      school: "Online Platform",
-      degree: "Full Stack Development Certificate",
-      dateRange: "2019",
+      school: "Indian Institute of Technology Madras",
+      degree: "BS Degree in Data Science & Applications",
+      dateRange: "",
       achievements: [
-        "Completed 500+ hours of coursework",
-        "Built 10+ portfolio projects",
-        "Specialized in React and Node.js",
+        "Currently at foundational level",
+      ],
+    },
+    {
+      school: "Mithibai College",
+      degree: "Junior College",
+      dateRange: "Completed",
+      achievements: [],
+    },
+    {
+      school: "Yashodham High School",
+      degree: "High School",
+      dateRange: "Completed",
+      achievements: [
+        "Earned the title of Master Cordial in 10th Standard",
       ],
     },
   ],
