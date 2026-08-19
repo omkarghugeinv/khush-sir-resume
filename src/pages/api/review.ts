@@ -10,7 +10,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     const rating = parseInt(data.get('rating')?.toString() || '5', 10);
 
     if (name && content) {
-      addReview(name, role, content, rating);
+      await addReview(name, role, content, rating);
       return redirect('/?review_success=1#reviews', 303);
     }
   } catch (e) {

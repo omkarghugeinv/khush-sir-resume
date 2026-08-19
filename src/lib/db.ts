@@ -1,30 +1,20 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js';
 
-// Use /tmp on Vercel since the main filesystem is read-only. 
-// Note: Data in /tmp is NOT persistent and will clear on serverless cold starts!
-const dbDir = process.env.VERCEL ? '/tmp' : process.cwd();
-const dbPath = path.resolve(dbDir, 'reviews.db');
-const db = new Database(dbPath);
+// Use import.meta.env for Astro, with fallbacks for Node.js scripts
+const supabaseUrl = 
+  (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.PUBLIC_SUPABASE_URL : '') || 
+  process.env.PUBLIC_SUPABASE_URL || 
+  process.env.SUPABASE_URL;
 
-// Initialize the reviews table if it doesn't exist
-db.exec(`
-  CREATE TABLE IF NOT EXISTS reviews (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    role TEXT,
-    content TEXT NOT NULL,
-    rating INTEGER DEFAULT 5,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+const supabaseKey = 
+  (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.PUBLIC_SUPABASE_ANON_KEY : '') || 
+  process.env.PUBLIC_SUPABASE_ANON_KEY || 
+  process.env.SUPABASE_KEY;
 
-// Try to add rating column if it's an older db
-try {
-  db.exec(`ALTER TABLE reviews ADD COLUMN rating INTEGER DEFAULT 5;`);
-} catch (e) {
-  // column might already exist
-}
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co', 
+  supabaseKey || 'placeholder'
+);
 
 export interface Review {
   id: number;
@@ -35,12 +25,27 @@ export interface Review {
   created_at: string;
 }
 
-export function getReviews(): Review[] {
-  const stmt = db.prepare('SELECT * FROM reviews ORDER BY created_at DESC');
-  return stmt.all() as Review[];
+export async function getReviews(): Promise<Review[]> {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) {
+    console.error('Error fetching reviews:', error);
+    return [];
+  }
+  return data as Review[];
 }
 
-export function addReview(name: string, role: string, content: string, rating: number = 5): void {
-  const stmt = db.prepare('INSERT INTO reviews (name, role, content, rating) VALUES (?, ?, ?, ?)');
-  stmt.run(name, role, content, rating);
+export async function addReview(name: string, role: string, content: string, rating: number = 5): Promise<void> {
+  const { error } = await supabase
+    .from('reviews')
+    .insert([
+      { name, role, content, rating }
+    ]);
+    
+  if (error) {
+    console.error('Error adding review:', error);
+  }
 }

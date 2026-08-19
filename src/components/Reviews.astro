@@ -9,7 +9,7 @@ if (url.searchParams.get('review_success') === '1') {
   success = true;
 }
 
-const reviews = getReviews();
+const reviews = await getReviews();
 ---
 
 <section id="reviews" class="p-8 sm:p-12 md:p-16 lg:p-24 bg-gray-50 dark:bg-[#111] border-t border-gray-200 dark:border-gray-800">
