@@ -11,7 +11,7 @@ const supabaseKey =
   process.env.PUBLIC_SUPABASE_ANON_KEY || 
   process.env.SUPABASE_KEY;
 
-export const supabase = createClient(
+const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co', 
   supabaseKey || 'placeholder'
 );
