@@ -4,6 +4,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://omkarghugeinv.github.io',
+  base: '/khush-sir-resume',
   vite: {
     plugins: [tailwindcss()],
   },
