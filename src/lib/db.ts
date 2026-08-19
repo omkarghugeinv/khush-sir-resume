@@ -26,26 +26,35 @@ export interface Review {
 }
 
 export async function getReviews(): Promise<Review[]> {
-  const { data, error } = await supabase
-    .from('reviews')
-    .select('*')
-    .order('created_at', { ascending: false });
-    
-  if (error) {
-    console.error('Error fetching reviews:', error);
+  try {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Error fetching reviews:', error);
+      return [];
+    }
+    return (data as Review[]) || [];
+  } catch (e) {
+    console.error('Exception fetching reviews:', e);
     return [];
   }
-  return data as Review[];
 }
 
 export async function addReview(name: string, role: string, content: string, rating: number = 5): Promise<void> {
-  const { error } = await supabase
-    .from('reviews')
-    .insert([
-      { name, role, content, rating }
-    ]);
-    
-  if (error) {
-    console.error('Error adding review:', error);
+  try {
+    const { error } = await supabase
+      .from('reviews')
+      .insert([
+        { name, role, content, rating }
+      ]);
+      
+    if (error) {
+      console.error('Error adding review:', error);
+    }
+  } catch (e) {
+    console.error('Exception adding review:', e);
   }
 }

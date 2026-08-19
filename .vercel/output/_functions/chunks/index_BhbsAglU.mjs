@@ -1,7 +1,7 @@
 import { t as __exportAll } from "./rolldown-runtime_D7D4PA-g.mjs";
 import { a as Fragment, d as maybeRenderHead, f as renderHead, i as renderComponent, m as createRenderInstruction, p as addAttribute, u as renderTemplate, x as createAstro } from "./server_B3uirvln.mjs";
 import { t as createComponent } from "./compiler_7Klmclb_.mjs";
-import { n as getReviews } from "./db_CRKVRyQ5.mjs";
+import { n as getReviews } from "./db_B0GqMx6A.mjs";
 //#region node_modules/astro/dist/runtime/server/render/script.js
 async function renderScript(result, id) {
 	const inlined = result.inlinedScripts.get(id);

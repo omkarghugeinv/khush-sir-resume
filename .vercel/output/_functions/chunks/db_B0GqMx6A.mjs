@@ -6,6 +6,8 @@ var supabaseUrl = (typeof import.meta !== "undefined" && Object.assign({
 	"DEV": false,
 	"MODE": "production",
 	"PROD": true,
+	"PUBLIC_SUPABASE_ANON_KEY": "sb_publishable__UYn9xmB6QWtZbzDuUjUtQ_5yrghgM_",
+	"PUBLIC_SUPABASE_URL": "https://yydmedwuwwkikuvpszlk.supabase.co",
 	"SITE": void 0,
 	"SSR": true
 }, { PUBLIC: "C:\\Users\\Public" }) ? Object.assign({
@@ -14,6 +16,8 @@ var supabaseUrl = (typeof import.meta !== "undefined" && Object.assign({
 	"DEV": false,
 	"MODE": "production",
 	"PROD": true,
+	"PUBLIC_SUPABASE_ANON_KEY": "sb_publishable__UYn9xmB6QWtZbzDuUjUtQ_5yrghgM_",
+	"PUBLIC_SUPABASE_URL": "https://yydmedwuwwkikuvpszlk.supabase.co",
 	"SITE": void 0,
 	"SSR": true
 }, { PUBLIC: "C:\\Users\\Public" }).PUBLIC_SUPABASE_URL : "") || process.env.PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -23,6 +27,8 @@ var supabaseKey = (typeof import.meta !== "undefined" && Object.assign({
 	"DEV": false,
 	"MODE": "production",
 	"PROD": true,
+	"PUBLIC_SUPABASE_ANON_KEY": "sb_publishable__UYn9xmB6QWtZbzDuUjUtQ_5yrghgM_",
+	"PUBLIC_SUPABASE_URL": "https://yydmedwuwwkikuvpszlk.supabase.co",
 	"SITE": void 0,
 	"SSR": true
 }, { PUBLIC: "C:\\Users\\Public" }) ? Object.assign({
@@ -31,6 +37,8 @@ var supabaseKey = (typeof import.meta !== "undefined" && Object.assign({
 	"DEV": false,
 	"MODE": "production",
 	"PROD": true,
+	"PUBLIC_SUPABASE_ANON_KEY": "sb_publishable__UYn9xmB6QWtZbzDuUjUtQ_5yrghgM_",
+	"PUBLIC_SUPABASE_URL": "https://yydmedwuwwkikuvpszlk.supabase.co",
 	"SITE": void 0,
 	"SSR": true
 }, { PUBLIC: "C:\\Users\\Public" }).PUBLIC_SUPABASE_ANON_KEY : "") || process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
