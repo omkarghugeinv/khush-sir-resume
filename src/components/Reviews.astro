@@ -1,15 +1,5 @@
 ---
-import { getReviews } from '../lib/db';
 import { siteConfig } from '../config';
-
-let success = false;
-
-const url = new URL(Astro.request.url);
-if (url.searchParams.get('review_success') === '1') {
-  success = true;
-}
-
-const reviews = await getReviews();
 ---
 
 <section id="reviews" class="p-8 sm:p-12 md:p-16 lg:p-24 bg-gray-50 dark:bg-[#111] border-t border-gray-200 dark:border-gray-800">
@@ -34,13 +24,15 @@ const reviews = await getReviews();
         <div class="bg-white dark:bg-[#1a1a1a] p-6 sm:p-8 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow duration-300">
           <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Leave a Review</h3>
           
-          {success && (
-            <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 rounded-md">
-              Thank you for your feedback!
-            </div>
-          )}
+          <div id="review-success-msg" class="hidden mb-6 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 rounded-md">
+            Thank you for your feedback!
+          </div>
+          
+          <div id="review-error-msg" class="hidden mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-md">
+            There was an error submitting your review. Please try again.
+          </div>
 
-          <form id="review-form" method="POST" action="/api/review" class="space-y-5">
+          <form id="review-form" class="space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
@@ -88,55 +80,149 @@ const reviews = await getReviews();
           </form>
         </div>
 
-        <script>
-          // Prevent double submissions and show loading state
-          const form = document.getElementById('review-form');
-          const btn = document.getElementById('submit-review-btn');
-          
-          if (form && btn) {
-            form.addEventListener('submit', () => {
-              const span = btn.querySelector('span');
-              if (span) span.innerText = 'Submitting...';
-              btn.classList.add('opacity-75', 'cursor-not-allowed');
-              // We don't completely disable the button because it can interrupt form submission in some browsers,
-              // but styling it as disabled gives the right visual cue!
-            });
-          }
-        </script>
-
         <!-- Reviews List -->
         <div class="space-y-6">
-          {reviews.length === 0 ? (
-            <p class="text-center text-gray-500 dark:text-gray-400 p-8 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">No reviews yet. Be the first to leave one!</p>
-          ) : (
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {reviews.map((review) => (
-                <div class="bg-white dark:bg-[#1a1a1a] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow duration-300 flex flex-col">
-                  <div class="flex text-yellow-400 mb-3 text-lg">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span class={i < review.rating ? "text-yellow-400 drop-shadow-sm" : "text-gray-300 dark:text-gray-600"}>★</span>
-                    ))}
-                  </div>
-                  <p class="text-gray-700 dark:text-gray-300 mb-5 leading-relaxed italic">"{review.content}"</p>
-                  <div class="flex items-center mt-auto pt-4 border-t border-gray-50 dark:border-gray-800">
-                    <div class="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3 shadow-sm" style={`background-color: ${siteConfig.accentColor}`}>
-                      {review.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <h4 class="font-semibold text-gray-900 dark:text-white leading-tight">{review.name}</h4>
-                      {review.role && <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{review.role}</p>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <div id="reviews-loading" class="text-center text-gray-500 dark:text-gray-400 p-8 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+            Loading reviews...
+          </div>
+          
+          <div id="reviews-empty" class="hidden text-center text-gray-500 dark:text-gray-400 p-8 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+            No reviews yet. Be the first to leave one!
+          </div>
+
+          <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+            <!-- Reviews injected here via JS -->
+          </div>
         </div>
 
       </div>
     </div>
   </div>
 </section>
+
+<!-- Template for a single review card -->
+<template id="review-card-template">
+  <div class="bg-white dark:bg-[#1a1a1a] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow duration-300 flex flex-col">
+    <div class="review-stars flex text-yellow-400 mb-3 text-lg"></div>
+    <p class="review-content text-gray-700 dark:text-gray-300 mb-5 leading-relaxed italic"></p>
+    <div class="flex items-center mt-auto pt-4 border-t border-gray-50 dark:border-gray-800">
+      <div class="review-avatar h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3 shadow-sm" style={`background-color: ${siteConfig.accentColor}`}></div>
+      <div>
+        <h4 class="review-name font-semibold text-gray-900 dark:text-white leading-tight"></h4>
+        <p class="review-role text-sm text-gray-500 dark:text-gray-400 mt-0.5"></p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { getReviews, addReview } from '../lib/db';
+
+  async function loadReviews() {
+    const loadingEl = document.getElementById('reviews-loading');
+    const emptyEl = document.getElementById('reviews-empty');
+    const containerEl = document.getElementById('reviews-container');
+    const template = document.getElementById('review-card-template') as HTMLTemplateElement;
+
+    if (!loadingEl || !emptyEl || !containerEl || !template) return;
+
+    const reviews = await getReviews();
+    
+    loadingEl.classList.add('hidden');
+    
+    if (!reviews || reviews.length === 0) {
+      emptyEl.classList.remove('hidden');
+      containerEl.classList.add('hidden');
+      return;
+    }
+
+    emptyEl.classList.add('hidden');
+    containerEl.classList.remove('hidden');
+    containerEl.innerHTML = ''; // clear loading state
+
+    reviews.forEach(review => {
+      const clone = template.content.cloneNode(true) as DocumentFragment;
+      
+      const contentEl = clone.querySelector('.review-content');
+      if (contentEl) contentEl.textContent = `"${review.content}"`;
+      
+      const nameEl = clone.querySelector('.review-name');
+      if (nameEl) nameEl.textContent = review.name;
+      
+      const roleEl = clone.querySelector('.review-role');
+      if (roleEl) {
+        if (review.role) {
+          roleEl.textContent = review.role;
+        } else {
+          roleEl.remove();
+        }
+      }
+      
+      const avatarEl = clone.querySelector('.review-avatar');
+      if (avatarEl && review.name) {
+        avatarEl.textContent = review.name.charAt(0).toUpperCase();
+      }
+
+      const starsEl = clone.querySelector('.review-stars');
+      if (starsEl) {
+        for (let i = 0; i < 5; i++) {
+          const starSpan = document.createElement('span');
+          starSpan.textContent = '★';
+          starSpan.className = i < (review.rating || 5) 
+            ? "text-yellow-400 drop-shadow-sm" 
+            : "text-gray-300 dark:text-gray-600";
+          starsEl.appendChild(starSpan);
+        }
+      }
+
+      containerEl.appendChild(clone);
+    });
+  }
+
+  // Load reviews on mount
+  loadReviews();
+
+  // Handle form submission
+  const form = document.getElementById('review-form') as HTMLFormElement;
+  const btn = document.getElementById('submit-review-btn') as HTMLButtonElement;
+  const successMsg = document.getElementById('review-success-msg');
+  const errorMsg = document.getElementById('review-error-msg');
+  
+  if (form && btn) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const span = btn.querySelector('span');
+      const originalText = span ? span.innerText : 'Submit Review';
+      
+      if (span) span.innerText = 'Submitting...';
+      btn.classList.add('opacity-75', 'cursor-not-allowed');
+      btn.disabled = true;
+      
+      if (successMsg) successMsg.classList.add('hidden');
+      if (errorMsg) errorMsg.classList.add('hidden');
+
+      const formData = new FormData(form);
+      const name = formData.get('name')?.toString() || '';
+      const role = formData.get('role')?.toString() || '';
+      const content = formData.get('content')?.toString() || '';
+      const rating = parseInt(formData.get('rating')?.toString() || '5', 10);
+
+      try {
+        await addReview(name, role, content, rating);
+        if (successMsg) successMsg.classList.remove('hidden');
+        form.reset();
+        await loadReviews(); // Reload the list
+      } catch (err) {
+        if (errorMsg) errorMsg.classList.remove('hidden');
+      } finally {
+        if (span) span.innerText = originalText;
+        btn.classList.remove('opacity-75', 'cursor-not-allowed');
+        btn.disabled = false;
+      }
+    });
+  }
+</script>
 
 <style>
 /* Fancy Star Rating Animation */
@@ -152,7 +238,7 @@ const reviews = await getReviews();
   color: #374151; /* Tailwind gray-700 */
 }
 
-/* Hover affects the current star and all previous stars (which are succeeding siblings due to flex-row-reverse) */
+/* Hover affects the current star and all previous stars */
 .star-rating label:hover,
 .star-rating label:hover ~ label {
   color: #fbbf24 !important; /* Tailwind yellow-400 */

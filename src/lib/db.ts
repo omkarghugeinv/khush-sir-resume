@@ -1,15 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Use import.meta.env for Astro, with fallbacks for Node.js scripts
-const supabaseUrl = 
-  (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.PUBLIC_SUPABASE_URL : '') || 
-  process.env.PUBLIC_SUPABASE_URL || 
-  process.env.SUPABASE_URL;
+const getEnv = (key: string) => {
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
+    return import.meta.env[key];
+  }
+  if (typeof process !== 'undefined' && process.env && process.env[key]) {
+    return process.env[key];
+  }
+  return '';
+};
 
-const supabaseKey = 
-  (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.PUBLIC_SUPABASE_ANON_KEY : '') || 
-  process.env.PUBLIC_SUPABASE_ANON_KEY || 
-  process.env.SUPABASE_KEY;
+const supabaseUrl = getEnv('PUBLIC_SUPABASE_URL') || getEnv('SUPABASE_URL');
+const supabaseKey = getEnv('PUBLIC_SUPABASE_ANON_KEY') || getEnv('SUPABASE_KEY');
 
 const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co', 
@@ -53,8 +55,10 @@ export async function addReview(name: string, role: string, content: string, rat
       
     if (error) {
       console.error('Error adding review:', error);
+      throw error;
     }
   } catch (e) {
     console.error('Exception adding review:', e);
+    throw e;
   }
 }
