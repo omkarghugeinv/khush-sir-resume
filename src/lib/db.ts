@@ -1,8 +1,10 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-// Create a new database file in the project root
-const dbPath = path.resolve(process.cwd(), 'reviews.db');
+// Use /tmp on Vercel since the main filesystem is read-only. 
+// Note: Data in /tmp is NOT persistent and will clear on serverless cold starts!
+const dbDir = process.env.VERCEL ? '/tmp' : process.cwd();
+const dbPath = path.resolve(dbDir, 'reviews.db');
 const db = new Database(dbPath);
 
 // Initialize the reviews table if it doesn't exist
