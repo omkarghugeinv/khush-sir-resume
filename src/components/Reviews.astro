@@ -1,0 +1,179 @@
+---
+import { getReviews } from '../lib/db';
+import { siteConfig } from '../config';
+
+let success = false;
+
+const url = new URL(Astro.request.url);
+if (url.searchParams.get('review_success') === '1') {
+  success = true;
+}
+
+const reviews = getReviews();
+---
+
+<section id="reviews" class="p-8 sm:p-12 md:p-16 lg:p-24 bg-gray-50 dark:bg-[#111] border-t border-gray-200 dark:border-gray-800">
+  <div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+      <div class="lg:col-span-4">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-bold text-gray-900 dark:text-white">
+          Reviews
+        </h2>
+        <div
+          class="w-[75px] h-[5px] mt-2 rounded-full"
+          style={`background-color: ${siteConfig.accentColor}`}
+        ></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">
+          See what people are saying or leave a review yourself!
+        </p>
+      </div>
+
+      <div class="lg:col-span-8 space-y-12">
+        
+        <!-- Review Form -->
+        <div class="bg-white dark:bg-[#1a1a1a] p-6 sm:p-8 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow duration-300">
+          <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Leave a Review</h3>
+          
+          {success && (
+            <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 rounded-md">
+              Thank you for your feedback!
+            </div>
+          )}
+
+          <form id="review-form" method="POST" action="/api/review" class="space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-[#111] dark:text-white px-4 py-2 border transition-colors" />
+              </div>
+              <div>
+                <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Role / Company (Optional)</label>
+                <input type="text" id="role" name="role" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-[#111] dark:text-white px-4 py-2 border transition-colors" />
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rating</label>
+              <div class="star-rating text-4xl inline-flex flex-row-reverse justify-end">
+                <input type="radio" id="star5" name="rating" value="5" checked />
+                <label for="star5" title="5 stars">★</label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="4 stars">★</label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="3 stars">★</label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="2 stars">★</label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="1 star">★</label>
+              </div>
+            </div>
+
+            <div>
+              <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Review</label>
+              <textarea id="content" name="content" rows="4" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-[#111] dark:text-white px-4 py-3 border transition-colors"></textarea>
+            </div>
+            <div class="mt-4">
+              <button 
+                type="submit" 
+                id="submit-review-btn"
+                class="group inline-flex items-center justify-center py-3 px-8 border border-transparent shadow-md text-base font-semibold rounded-lg text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-[#111] transition-all duration-200 transform hover:-translate-y-0.5" 
+                style={`background-color: ${siteConfig.accentColor};`}
+              >
+                <span>Submit Review</span>
+                <svg class="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <script>
+          // Prevent double submissions and show loading state
+          const form = document.getElementById('review-form');
+          const btn = document.getElementById('submit-review-btn');
+          
+          if (form && btn) {
+            form.addEventListener('submit', () => {
+              const span = btn.querySelector('span');
+              if (span) span.innerText = 'Submitting...';
+              btn.classList.add('opacity-75', 'cursor-not-allowed');
+              // We don't completely disable the button because it can interrupt form submission in some browsers,
+              // but styling it as disabled gives the right visual cue!
+            });
+          }
+        </script>
+
+        <!-- Reviews List -->
+        <div class="space-y-6">
+          {reviews.length === 0 ? (
+            <p class="text-center text-gray-500 dark:text-gray-400 p-8 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">No reviews yet. Be the first to leave one!</p>
+          ) : (
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {reviews.map((review) => (
+                <div class="bg-white dark:bg-[#1a1a1a] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow duration-300 flex flex-col">
+                  <div class="flex text-yellow-400 mb-3 text-lg">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span class={i < review.rating ? "text-yellow-400 drop-shadow-sm" : "text-gray-300 dark:text-gray-600"}>★</span>
+                    ))}
+                  </div>
+                  <p class="text-gray-700 dark:text-gray-300 mb-5 leading-relaxed italic">"{review.content}"</p>
+                  <div class="flex items-center mt-auto pt-4 border-t border-gray-50 dark:border-gray-800">
+                    <div class="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-lg mr-3 shadow-sm" style={`background-color: ${siteConfig.accentColor}`}>
+                      {review.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-900 dark:text-white leading-tight">{review.name}</h4>
+                      {review.role && <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{review.role}</p>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Fancy Star Rating Animation */
+.star-rating input {
+  display: none;
+}
+.star-rating label {
+  cursor: pointer;
+  color: #d1d5db; /* Tailwind gray-300 */
+  transition: color 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+:global(.dark) .star-rating label {
+  color: #374151; /* Tailwind gray-700 */
+}
+
+/* Hover affects the current star and all previous stars (which are succeeding siblings due to flex-row-reverse) */
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #fbbf24 !important; /* Tailwind yellow-400 */
+  transform: scale(1.15);
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+/* Selected stars */
+.star-rating input:checked ~ label {
+  color: #f59e0b; /* Tailwind yellow-500 */
+}
+
+/* Bounce animation on click/check */
+@keyframes star-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35) rotate(-5deg); }
+  100% { transform: scale(1); }
+}
+.star-rating input:checked + label {
+  animation: star-bounce 0.4s forwards;
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+}
+</style>

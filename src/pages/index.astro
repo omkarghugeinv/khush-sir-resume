@@ -5,6 +5,7 @@ import About from "../components/About.astro";
 import Projects from "../components/Projects.astro";
 import Experience from "../components/Experience.astro";
 import Education from "../components/Education.astro";
+import Reviews from "../components/Reviews.astro";
 import Footer from "../components/Footer.astro";
 import { siteConfig } from "../config";
 import "../styles/global.css";
@@ -27,13 +28,14 @@ import "../styles/global.css";
   </head>
   <body>
     <Header />
-    <section>
+    <main>
       <Hero />
       <About />
       <Projects />
       <Experience />
       <Education />
-    </section>
+      <Reviews />
+    </main>
     <Footer />
   </body>
 </html>
